@@ -1,8 +1,14 @@
 FROM centos:latest
 
-VOLUME /sys/fs/cgroup /run /tmp
-ENV container=docker
+RUN yum -y --setopt=tsflags=nodocs update && \
+    yum -y --setopt=tsflags=nodocs install httpd && \
+    yum clean all
 
-RUN /bin/yum -y install httpd
+EXPOSE 80
 
-CMD /bin/systemctl start httpd
+# Simple startup script to avoid some issues observed with container restart
+ADD run-httpd.sh /run-httpd.sh
+RUN chmod -v +x /run-httpd.sh
+RUN echo "Hello from $(hostname)" > /var/www/html/index.html
+
+CMD ["/run-httpd.sh"]
