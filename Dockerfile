@@ -1,5 +1,8 @@
 FROM centos:latest
 
-RUN yum -y install httpd
+VOLUME /sys/fs/cgroup /run /tmp
+ENV container=docker
 
-CMD systemctl start httpd
+RUN /bin/yum -y install httpd
+
+CMD /bin/systemctl start httpd
